@@ -133,24 +133,27 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate{
             var recognizedPoints: [VNRecognizedPoint] = []
             
             try results.forEach { observation in
-              
-              let fingers = try observation.recognizedPoints(.all)
-
-              if let thumbTipPoint = fingers[.thumbTip] {
-                recognizedPoints.append(thumbTipPoint)
-              }
-              if let indexTipPoint = fingers[.indexTip] {
-                recognizedPoints.append(indexTipPoint)
-              }
-              if let middleTipPoint = fingers[.middleTip] {
-                recognizedPoints.append(middleTipPoint)
-              }
-              if let ringTipPoint = fingers[.ringTip] {
-                recognizedPoints.append(ringTipPoint)
-              }
-              if let littleTipPoint = fingers[.littleTip] {
-                recognizedPoints.append(littleTipPoint)
-              }
+                
+                let fingers = try observation.recognizedPoints(.all)
+                
+                if let thumbTipPoint = fingers[.thumbTip] {
+                    //recognizedPoints.append(thumbTipPoint)
+                    if thumbTipPoint.confidence > 0.9{
+                        
+                        if let indexTipPoint = fingers[.indexTip] {
+                            recognizedPoints.append(indexTipPoint)
+                        }
+                        if let middleTipPoint = fingers[.middleTip] {
+                            recognizedPoints.append(middleTipPoint)
+                        }
+                        if let ringTipPoint = fingers[.ringTip] {
+                            recognizedPoints.append(ringTipPoint)
+                        }
+                        if let littleTipPoint = fingers[.littleTip] {
+                            recognizedPoints.append(littleTipPoint)
+                        }
+                    }
+                }
             }
             
             fingerTips = recognizedPoints.filter {

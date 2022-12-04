@@ -14,6 +14,7 @@
 		B63534A6293BC23E009D490E /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63534A5293BC23E009D490E /* CameraView.swift */; };
 		B63534A9293BC268009D490E /* CameraPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63534A8293BC268009D490E /* CameraPreview.swift */; };
 		B63534AB293BC289009D490E /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63534AA293BC289009D490E /* CameraViewController.swift */; };
+		B6928190293C8A8F00AC2B2D /* MiDi.swift in Sources */ = {isa = PBXBuildFile; fileRef = B692818F293C8A8F00AC2B2D /* MiDi.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,6 +26,7 @@
 		B63534A5293BC23E009D490E /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
 		B63534A8293BC268009D490E /* CameraPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPreview.swift; sourceTree = "<group>"; };
 		B63534AA293BC289009D490E /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
+		B692818F293C8A8F00AC2B2D /* MiDi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiDi.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,7 +61,8 @@
 			children = (
 				B61C28E7293BC10F0048FFEC /* Hands_FreeApp.swift */,
 				B61C28E9293BC10F0048FFEC /* ContentView.swift */,
-				B63534A7293BC248009D490E /* Cam */,
+				B692818F293C8A8F00AC2B2D /* MiDi.swift */,
+				B63534A7293BC248009D490E /* Camera */,
 				B61C28EB293BC1120048FFEC /* Assets.xcassets */,
 				B61C28ED293BC1120048FFEC /* Preview Content */,
 			);
@@ -74,14 +77,14 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
-		B63534A7293BC248009D490E /* Cam */ = {
+		B63534A7293BC248009D490E /* Camera */ = {
 			isa = PBXGroup;
 			children = (
 				B63534A5293BC23E009D490E /* CameraView.swift */,
 				B63534A8293BC268009D490E /* CameraPreview.swift */,
 				B63534AA293BC289009D490E /* CameraViewController.swift */,
 			);
-			path = Cam;
+			path = Camera;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -154,6 +157,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B6928190293C8A8F00AC2B2D /* MiDi.swift in Sources */,
 				B63534A6293BC23E009D490E /* CameraView.swift in Sources */,
 				B63534AB293BC289009D490E /* CameraViewController.swift in Sources */,
 				B63534A9293BC268009D490E /* CameraPreview.swift in Sources */,
