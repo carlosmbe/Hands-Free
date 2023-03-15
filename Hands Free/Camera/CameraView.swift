@@ -18,6 +18,6 @@ struct CameraView: UIViewControllerRepresentable{
     }
     
     func updateUIViewController(_ uiViewController: CameraViewController, context: Context) {
-        //No need for this app
+        //Not needed for this app
     }
 }

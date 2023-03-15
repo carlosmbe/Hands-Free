@@ -9,18 +9,54 @@ import AVFoundation
 import SwiftUI
 import Vision
 
+
+class Badge: ObservableObject {
+    //This shows which chord was played as a view
+    @Published var ChordTitle = ""
+}
+
+var ChordInstance = Badge()
+
 struct ContentView: View {
     
+    //MARK: Overlays work. Not using overlay array with chords right nnow. Mainly for debugging
     @State private var overlayPoints: [CGPoint] = []
+    
+    @ObservedObject public var currentChord = ChordInstance
+    
+    var CameraViewFinder : some View{
+        CameraView {    overlayPoints = $0  }
+            .overlay(FingersOverlay(with: overlayPoints)
+                .foregroundColor(.green)
+            )
+            .ignoresSafeArea()
+        
+    }
+    
+    @ViewBuilder var showChord : some View{
+        if currentChord.ChordTitle == ""{
+            EmptyView()
+        }else{
+            ZStack{
+                Circle()
+                    .foregroundColor(.indigo)
+                
+                Text(currentChord.ChordTitle)
+                    .font(.headline)
+                
+            }.frame(width: 150,height: 250)
+        }
+    }
     
     var body: some View {
         ZStack {
-            CameraView {    overlayPoints = $0  }
-            .overlay(FingersOverlay(with: overlayPoints)
-                    .foregroundColor(.green)
-                )
-            .ignoresSafeArea()
+            CameraViewFinder
+            
+            //MARK: Removable Text and View
+            Text(currentChord.ChordTitle)
+            showChord.opacity(0.3)
         }
+        
         
     }
 }

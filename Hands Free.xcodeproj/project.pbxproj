@@ -14,6 +14,7 @@
 		B63534A6293BC23E009D490E /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63534A5293BC23E009D490E /* CameraView.swift */; };
 		B63534A9293BC268009D490E /* CameraPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63534A8293BC268009D490E /* CameraPreview.swift */; };
 		B63534AB293BC289009D490E /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63534AA293BC289009D490E /* CameraViewController.swift */; };
+		B65EAB6F293CAB1000EE6D0C /* ProcessingHands.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65EAB6E293CAB1000EE6D0C /* ProcessingHands.swift */; };
 		B6928190293C8A8F00AC2B2D /* MiDi.swift in Sources */ = {isa = PBXBuildFile; fileRef = B692818F293C8A8F00AC2B2D /* MiDi.swift */; };
 /* End PBXBuildFile section */
 
@@ -26,6 +27,7 @@
 		B63534A5293BC23E009D490E /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
 		B63534A8293BC268009D490E /* CameraPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPreview.swift; sourceTree = "<group>"; };
 		B63534AA293BC289009D490E /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
+		B65EAB6E293CAB1000EE6D0C /* ProcessingHands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessingHands.swift; sourceTree = "<group>"; };
 		B692818F293C8A8F00AC2B2D /* MiDi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiDi.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -61,6 +63,7 @@
 			children = (
 				B61C28E7293BC10F0048FFEC /* Hands_FreeApp.swift */,
 				B61C28E9293BC10F0048FFEC /* ContentView.swift */,
+				B65EAB6E293CAB1000EE6D0C /* ProcessingHands.swift */,
 				B692818F293C8A8F00AC2B2D /* MiDi.swift */,
 				B63534A7293BC248009D490E /* Camera */,
 				B61C28EB293BC1120048FFEC /* Assets.xcassets */,
@@ -159,6 +162,7 @@
 			files = (
 				B6928190293C8A8F00AC2B2D /* MiDi.swift in Sources */,
 				B63534A6293BC23E009D490E /* CameraView.swift in Sources */,
+				B65EAB6F293CAB1000EE6D0C /* ProcessingHands.swift in Sources */,
 				B63534AB293BC289009D490E /* CameraViewController.swift in Sources */,
 				B63534A9293BC268009D490E /* CameraPreview.swift in Sources */,
 				B61C28EA293BC10F0048FFEC /* ContentView.swift in Sources */,

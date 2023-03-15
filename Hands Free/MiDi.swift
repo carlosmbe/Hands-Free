@@ -7,9 +7,49 @@
 
 import AudioToolbox
 
+
+public class Time_Control:Thread{
+
+    var wait_time:Int //In seconds
+    public var can_send:Bool = true
+
+    init(_ wait_time:Int) {
+        self.wait_time = wait_time
+    }
+
+    public override func start() {
+        super.start()
+
+        self.can_send = false
+        Thread.self.sleep(forTimeInterval: TimeInterval(self.wait_time))
+        self.can_send = true
+    }
+}
+
+var control = Time_Control(0)
+
+public func playMajorChord(root: UInt8 = 60, finger: String){
+    
+    if control.can_send{
+        //Start the time controller with 1 second
+        control = Time_Control(1)
+        control.start()
+        
+        let thirdMin = root + 4
+        let fifth = root + 7
+        
+        let chord : [UInt8] = [root,thirdMin,fifth]
+        createPlayer(chord: chord)
+        ChordInstance.ChordTitle = "\(finger)"
+    }
+
+}
+
 func createPlayer(chord : [UInt8]){
     var musicPlayer : MusicPlayer? = nil
     var player = NewMusicPlayer(&musicPlayer)
+    
+    createMusicSequence(chord: chord)
     
     player = MusicPlayerSetSequence(musicPlayer!, createMusicSequence(chord: chord))
     player = MusicPlayerStart(musicPlayer!)
@@ -44,11 +84,8 @@ func createMusicSequence(chord: [UInt8] ) -> MusicSequence {
         print("error creating track \(status)")
     }
     
-    
-    
     // now make some notes and put them on the track
     var beat: MusicTimeStamp = 0.0
-    
     
     for note: UInt8 in chord {
         var mess = MIDINoteMessage(channel: 0,
@@ -56,7 +93,9 @@ func createMusicSequence(chord: [UInt8] ) -> MusicSequence {
                                    velocity: 64,
                                    releaseVelocity: 0,
                                    duration: 1.0 )
+        
         status = MusicTrackNewMIDINoteEvent(track!, beat, &mess)
+        
         if status != noErr {    print("creating new midi note event \(status)") }
     }
     

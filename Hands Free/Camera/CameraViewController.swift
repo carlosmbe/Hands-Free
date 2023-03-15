@@ -10,6 +10,7 @@ import UIKit
 import Vision
 
 enum errors: Error{
+    //TODO: Write actual error cases
     case TooLazyToWrite
 }
 
@@ -81,11 +82,11 @@ final class CameraViewController : UIViewController{
     }
     
     
-    // Vision Stuff Below
+    //MARK: Vision Stuff Below
     
     private let handPoseRequest : VNDetectHumanHandPoseRequest = {
         let request = VNDetectHumanHandPoseRequest()
-        request.maximumHandCount = 2
+        request.maximumHandCount = 1
         return request
     }()
     
@@ -135,25 +136,53 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate{
             try results.forEach { observation in
                 
                 let fingers = try observation.recognizedPoints(.all)
+                MagicWithHands(fingers: fingers)
                 
+                //MARK: The following code was moved into a different function(MagicWithHands) for readablity. I'm keeping it here for reference.
+                
+                /*
                 if let thumbTipPoint = fingers[.thumbTip] {
-                    //recognizedPoints.append(thumbTipPoint)
+                    recognizedPoints.append(thumbTipPoint)
                     if thumbTipPoint.confidence > 0.9{
                         
-                        if let indexTipPoint = fingers[.indexTip] {
-                            recognizedPoints.append(indexTipPoint)
+                        
+                        
+                        if fingers[.indexTip]?.confidence ?? 0.0 > 0.9{
+                            recognizedPoints.append(fingers[.indexTip]!)
+                            playMajorChord(finger: "Index")//Default c I
+                        }else
+                        
+                        if fingers[.middleTip]?.confidence ?? 0.0 > 0.9 {
+                            recognizedPoints.append(fingers[.middleTip]!)
+                            playMajorChord(root: 65, finger: "Middle")//F IV
+                        }else
+                        
+                        if fingers[.littleTip]?.confidence ?? 0.0 > 0.9 {
+                            recognizedPoints.append(fingers[.littleTip]!)
+                            playMajorChord(root: 67, finger: "Little")//G V
                         }
+                        
+                      /*  if let indexTipPoint = fingers[.indexTip]  {
+                            if indexTipPoint.confidence > 0.9{
+                                recognizedPoints.append(indexTipPoint)
+                                playMajorChord()
+                            }
+                        }else
+                        
                         if let middleTipPoint = fingers[.middleTip] {
                             recognizedPoints.append(middleTipPoint)
-                        }
+                        }else
                         if let ringTipPoint = fingers[.ringTip] {
                             recognizedPoints.append(ringTipPoint)
-                        }
+                        }else
                         if let littleTipPoint = fingers[.littleTip] {
                             recognizedPoints.append(littleTipPoint)
                         }
+                       */
                     }
                 }
+                
+                */
             }
             
             fingerTips = recognizedPoints.filter {
