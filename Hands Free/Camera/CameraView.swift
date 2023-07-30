@@ -7,17 +7,20 @@
 
 import SwiftUI
 
-struct CameraView: UIViewControllerRepresentable{
+/// A SwiftUI view that represents a `CameraViewController`.
+struct CameraView: UIViewControllerRepresentable {
     
+    // A closure that processes an array of CGPoint values.
     var pointsProcessorHandler: (([CGPoint]) -> Void)?
     
+    /// Create the associated `UIViewController` for this SwiftUI view.
     func makeUIViewController(context: Context) -> CameraViewController {
         let cvc = CameraViewController()
         cvc.pointsProcessorHandler = pointsProcessorHandler
         return cvc
     }
     
-    func updateUIViewController(_ uiViewController: CameraViewController, context: Context) {
-        //Not needed for this app
-    }
+    /// Update the associated `UIViewController` for this SwiftUI view.
+    /// Currently not implemented as it is not needed for this app.
+    func updateUIViewController(_ uiViewController: CameraViewController, context: Context) { }
 }

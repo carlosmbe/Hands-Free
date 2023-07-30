@@ -9,196 +9,130 @@ import AVFoundation
 import UIKit
 import Vision
 
-enum errors: Error{
-    //TODO: Write actual error cases
-    case TooLazyToWrite
+enum CameraErrors: Error {
+    //TODO: Add specific error cases
+    case setupError
 }
 
-final class CameraViewController : UIViewController{
+final class CameraViewController: UIViewController {
     
     private var cameraFeedSession: AVCaptureSession?
     
+    // Setting up the camera preview layer.
     override func loadView() {
         view = CameraPreview()
     }
     
-    private var cameraView: CameraPreview{ view as! CameraPreview}
+    private var cameraView: CameraPreview { view as! CameraPreview }
     
-    
+    // On appearing, start the camera feed.
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        do{
-            if cameraFeedSession == nil{
+        do {
+            if cameraFeedSession == nil {
                 try setupAVSession()
                 cameraView.previewLayer.session = cameraFeedSession
                 cameraView.previewLayer.videoGravity = .resizeAspectFill
             }
             cameraFeedSession?.startRunning()
-        }catch{
+        } catch {
             print(error.localizedDescription)
         }
     }
     
+    // On disappearing, stop the camera feed.
     override func viewDidDisappear(_ animated: Bool) {
         cameraFeedSession?.stopRunning()
         super.viewDidDisappear(animated)
     }
     
-    private let videoDataOutputQueue =
-        DispatchQueue(label: "CameraFeedOutput", qos: .userInteractive)
+    // Queue for processing video data.
+    private let videoDataOutputQueue = DispatchQueue(label: "CameraFeedOutput", qos: .userInteractive)
     
-    
+    // Setting up the AV session.
     func setupAVSession() throws {
-        //Start of setup
         guard let videoDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) else {
-            throw errors.TooLazyToWrite
+            throw CameraErrors.setupError
         }
         
-        guard let deviceInput = try? AVCaptureDeviceInput(device: videoDevice) else{
-            throw errors.TooLazyToWrite
+        guard let deviceInput = try? AVCaptureDeviceInput(device: videoDevice) else {
+            throw CameraErrors.setupError
         }
         
         let session = AVCaptureSession()
         session.beginConfiguration()
-        session.sessionPreset = AVCaptureSession.Preset.high
+        session.sessionPreset = .high
         
-        guard session.canAddInput(deviceInput) else{
-            throw errors.TooLazyToWrite
+        guard session.canAddInput(deviceInput) else {
+            throw CameraErrors.setupError
         }
         
         session.addInput(deviceInput)
         
         let dataOutput = AVCaptureVideoDataOutput()
-        if session.canAddOutput(dataOutput){
+        if session.canAddOutput(dataOutput) {
             session.addOutput(dataOutput)
             dataOutput.alwaysDiscardsLateVideoFrames = true
             dataOutput.setSampleBufferDelegate(self, queue: videoDataOutputQueue)
-        }else{
-            throw errors.TooLazyToWrite
+        } else {
+            throw CameraErrors.setupError
         }
         
         session.commitConfiguration()
         cameraFeedSession = session
     }
     
-    
-    //MARK: Vision Stuff Below
-    
-    private let handPoseRequest : VNDetectHumanHandPoseRequest = {
+    // Vision request to detect human hand poses.
+    private let handPoseRequest: VNDetectHumanHandPoseRequest = {
         let request = VNDetectHumanHandPoseRequest()
         request.maximumHandCount = 1
         return request
     }()
     
- 
     var pointsProcessorHandler: (([CGPoint]) -> Void)?
 
+    // Convert detected points for the SwiftUI view.
     func processPoints(_ fingerTips: [CGPoint]) {
-      
-      let convertedPoints = fingerTips.map {
-        cameraView.previewLayer.layerPointConverted(fromCaptureDevicePoint: $0)
-      }
-
-      pointsProcessorHandler?(convertedPoints)
+        let convertedPoints = fingerTips.map {
+            cameraView.previewLayer.layerPointConverted(fromCaptureDevicePoint: $0)
+        }
+        pointsProcessorHandler?(convertedPoints)
     }
-    
 }
 
-
-extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate{
-    //Handler and Observation
-    
+// Extension to handle video data output and process it using Vision.
+extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        
         var fingerTips: [CGPoint] = []
         defer {
-          DispatchQueue.main.sync {
-            self.processPoints(fingerTips)
-          }
+            DispatchQueue.main.sync {
+                self.processPoints(fingerTips)
+            }
         }
 
-
+        let handler = VNImageRequestHandler(cmSampleBuffer: sampleBuffer, orientation: .up, options: [:])
         
-        let handler = VNImageRequestHandler(cmSampleBuffer: sampleBuffer,   orientation: .up,   options: [:])
-        
-        do{
+        do {
             try handler.perform([handPoseRequest])
-            
-            guard let results = handPoseRequest.results?.prefix(2),     !results.isEmpty  else{
+            guard let results = handPoseRequest.results?.prefix(2), !results.isEmpty else {
                 return
             }
-            
-            print(results)
-            //Drawing results
-            
+
             var recognizedPoints: [VNRecognizedPoint] = []
-            
+
             try results.forEach { observation in
-                
                 let fingers = try observation.recognizedPoints(.all)
-                MagicWithHands(fingers: fingers)
-                
-                //MARK: The following code was moved into a different function(MagicWithHands) for readablity. I'm keeping it here for reference.
-                
-                /*
-                if let thumbTipPoint = fingers[.thumbTip] {
-                    recognizedPoints.append(thumbTipPoint)
-                    if thumbTipPoint.confidence > 0.9{
-                        
-                        
-                        
-                        if fingers[.indexTip]?.confidence ?? 0.0 > 0.9{
-                            recognizedPoints.append(fingers[.indexTip]!)
-                            playMajorChord(finger: "Index")//Default c I
-                        }else
-                        
-                        if fingers[.middleTip]?.confidence ?? 0.0 > 0.9 {
-                            recognizedPoints.append(fingers[.middleTip]!)
-                            playMajorChord(root: 65, finger: "Middle")//F IV
-                        }else
-                        
-                        if fingers[.littleTip]?.confidence ?? 0.0 > 0.9 {
-                            recognizedPoints.append(fingers[.littleTip]!)
-                            playMajorChord(root: 67, finger: "Little")//G V
-                        }
-                        
-                      /*  if let indexTipPoint = fingers[.indexTip]  {
-                            if indexTipPoint.confidence > 0.9{
-                                recognizedPoints.append(indexTipPoint)
-                                playMajorChord()
-                            }
-                        }else
-                        
-                        if let middleTipPoint = fingers[.middleTip] {
-                            recognizedPoints.append(middleTipPoint)
-                        }else
-                        if let ringTipPoint = fingers[.ringTip] {
-                            recognizedPoints.append(ringTipPoint)
-                        }else
-                        if let littleTipPoint = fingers[.littleTip] {
-                            recognizedPoints.append(littleTipPoint)
-                        }
-                       */
-                    }
-                }
-                
-                */
+                magicWithHands(fingers: fingers)
             }
-            
+
             fingerTips = recognizedPoints.filter {
-              $0.confidence > 0.9
+                $0.confidence > 0.9
             }
             .map {
-              // Vision algorithms use a coordinate system with lower left origin and return normalized values relative to the pixel dimension of the input image. AVFoundation coordinates have an upper-left origin, so you convert the y-coordinate.
-              CGPoint(x: $0.location.x, y: 1 - $0.location.y)
+                CGPoint(x: $0.location.x, y: 1 - $0.location.y)
             }
-            
-            
-        }catch{
+        } catch {
             cameraFeedSession?.stopRunning()
         }
-        
     }
-    
 }
-

@@ -1,52 +1,47 @@
-//
-//  MiDi.swift
-//  Hands Free
-//
-//  Created by Carlos Mbendera on 04/12/2022.
-//
-
+// MiDi.swift
+// Hands Free
+// Created by Carlos Mbendera on 04/12/2022.
 import AudioToolbox
 
+/// This class controls the timing between consecutive MIDI sends.
+public class TimeControl: Thread {
+    // Time to wait before sending another MIDI message, in seconds.
+    var waitTime: Int
+    public var canSend: Bool = true
 
-public class Time_Control:Thread{
-
-    var wait_time:Int //In seconds
-    public var can_send:Bool = true
-
-    init(_ wait_time:Int) {
-        self.wait_time = wait_time
+    init(waitTime: Int) {
+        self.waitTime = waitTime
     }
 
     public override func start() {
         super.start()
-
-        self.can_send = false
-        Thread.self.sleep(forTimeInterval: TimeInterval(self.wait_time))
-        self.can_send = true
+        self.canSend = false
+        Thread.self.sleep(forTimeInterval: TimeInterval(self.waitTime))
+        self.canSend = true
     }
 }
 
-var control = Time_Control(0)
+var control = TimeControl(waitTime: 0)
 
-public func playMajorChord(root: UInt8 = 60, finger: String){
-    
-    if control.can_send{
-        //Start the time controller with 1 second
-        control = Time_Control(1)
+/// This function plays a major chord based on the root note and finger string.
+public func playMajorChord(root: UInt8 = 60, finger: String) {
+    if control.canSend {
+        // Start the time controller with 1 second
+        control = TimeControl(waitTime: 1)
         control.start()
-        
+
         let thirdMin = root + 4
         let fifth = root + 7
         
-        let chord : [UInt8] = [root,thirdMin,fifth]
+        let chord: [UInt8] = [root, thirdMin, fifth]
         createPlayer(chord: chord)
         ChordInstance.ChordTitle = "\(finger)"
     }
-
 }
 
-func createPlayer(chord : [UInt8]){
-    var musicPlayer : MusicPlayer? = nil
+/// This function creates a player for the given chord.
+func createPlayer(chord: [UInt8]) {
+    var musicPlayer: MusicPlayer? = nil
     var player = NewMusicPlayer(&musicPlayer)
     
     createMusicSequence(chord: chord)
@@ -55,53 +50,36 @@ func createPlayer(chord : [UInt8]){
     player = MusicPlayerStart(musicPlayer!)
 }
 
-func createMusicSequence(chord: [UInt8] ) -> MusicSequence {
-    // create the sequence
+/// This function creates a music sequence for the given chord.
+func createMusicSequence(chord: [UInt8]) -> MusicSequence {
     var musicSequence: MusicSequence?
     var status = NewMusicSequence(&musicSequence)
     if status != noErr {
-        print(" bad status \(status) creating sequence")
+        print("Bad status \(status) creating sequence")
     }
-    
-    /*
-     var tempoTrack: MusicTrack?
-     if MusicSequenceGetTempoTrack(musicSequence!, &tempoTrack) != noErr {
-     assert(tempoTrack != nil, "Cannot get tempo track")
-     }
-     //MusicTrackClear(tempoTrack, 0, 1)
-     if MusicTrackNewExtendedTempoEvent(tempoTrack!, 0.0, 128.0) != noErr {
-     print("could not set tempo")
-     }
-     if MusicTrackNewExtendedTempoEvent(tempoTrack!, 4.0, 256.0) != noErr {
-     print("could not set tempo")
-     }
-     
-     */
-    // add a track
+
     var track: MusicTrack?
     status = MusicSequenceNewTrack(musicSequence!, &track)
     if status != noErr {
-        print("error creating track \(status)")
+        print("Error creating track \(status)")
     }
     
-    // now make some notes and put them on the track
+    // Define and add notes to the track.
     var beat: MusicTimeStamp = 0.0
-    
     for note: UInt8 in chord {
-        var mess = MIDINoteMessage(channel: 0,
-                                   note: note,
-                                   velocity: 64,
-                                   releaseVelocity: 0,
-                                   duration: 1.0 )
+        var message = MIDINoteMessage(channel: 0,
+                                      note: note,
+                                      velocity: 64,
+                                      releaseVelocity: 0,
+                                      duration: 1.0)
         
-        status = MusicTrackNewMIDINoteEvent(track!, beat, &mess)
-        
-        if status != noErr {    print("creating new midi note event \(status)") }
+        status = MusicTrackNewMIDINoteEvent(track!, beat, &message)
+        if status != noErr {
+            print("Error creating new midi note event \(status)")
+        }
     }
     
     CAShow(UnsafeMutablePointer<MusicSequence>(musicSequence!))
     
     return musicSequence!
 }
-
-
