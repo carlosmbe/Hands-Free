@@ -4,7 +4,9 @@
 
 For simplicity sake, I made the project only react when your thumb and pinky are touching. You can configure this behaviour by changing the code in ProcessingHands.swift.
 
-Earler versions of that file have all fingers enabled if you'd like to see example implementations
+Earlier versions of that file have all fingers enabled if you'd like to see example implementations
+
+#### Important: Before building in Xcode, update the app team information to your own.
 
 ## Prerequisites
 
