@@ -35,7 +35,8 @@ public func playMajorChord(root: UInt8 = 60, finger: String) {
         
         let chord: [UInt8] = [root, thirdMin, fifth]
         createPlayer(chord: chord)
-        ChordInstance.ChordTitle = "\(finger)"
+        
+        chordInstance.chordTitle = "\(finger)"
     }
 }
 

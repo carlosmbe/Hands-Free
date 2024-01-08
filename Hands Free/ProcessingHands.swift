@@ -13,16 +13,19 @@ func magicWithHands(fingers: [VNHumanHandPoseObservation.JointName: VNRecognized
     }
     
     let thumbCGPoint = getFingerCGPoint(thumbTipPoint)
-    
-    if let littleTipPoint = fingers[.littleTip], littleTipPoint.confidence > 0.8 {
-        let littleFingerCGPoint = getFingerCGPoint(littleTipPoint)
-        
-        let threshold: Double = 0.1
-        if thumbTipPoint.distance(littleTipPoint) < threshold {
-            playMajorChord(root: 67, finger: "Little") // G V
-        }
+
+    // Check for Index Finger
+    if let indexTipPoint = fingers[.indexTip], indexTipPoint.confidence > 0.8 {
+        let indexFingerCGPoint = getFingerCGPoint(indexTipPoint)
+        fingerRecognized(thumbTipCG: thumbCGPoint, otherFinger: indexFingerCGPoint, fingerName: "Index")
     }
-    //MARK: Other finger checks can be added here in a similar manner when needed.
+
+
+    // Check for Little Finger
+    if let ringTipPoint = fingers[.ringTip], ringTipPoint.confidence > 0.6 {
+        let ringFingerCGPoint = getFingerCGPoint(ringTipPoint)
+        fingerRecognized(thumbTipCG: thumbCGPoint, otherFinger: ringFingerCGPoint, fingerName: "Ring")
+    }
 }
 
 /// Converts the given recognized point into a CGPoint.
