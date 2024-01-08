@@ -2,9 +2,14 @@
 
 "Hands Free" offers a novel way to play music. Using Apple's Vision Hand Pose, the project captures hand gestures through the device's front camera to trigger MiDi chords, letting users 'strum' melodies with simple hand movements.
 
-For simplicity sake, I made the project only react when your thumb and pinky are touching. You can configure this behaviour by changing the code in ProcessingHands.swift.
+~~For simplicity sake, I made the project only react when your thumb and pinky are touching. You can configure this behaviour by changing the code in ProcessingHands.swift.~~
 
-Earlier versions of that file have all fingers enabled if you'd like to see example implementations
+~~Earlier versions of that file have all fingers enabled if you'd like to see example implementations~~
+
+I re-enabled the multi finger detection. The app should play a chord when it sees your thumb in touch with the **Ring** or the **Index** finger. I'd strongly recommend checking out [Rhythm Snap](https://github.com/carlosmbe/Rhythm-Snap). The algorithm I used there is an improvement of the work done here. 
+
+So this is basically looking for a pinch action. 🤌 🤏 👌🏾
+
 
 #### Important: Before building in Xcode, update the app team information to your own.
 
@@ -52,3 +57,16 @@ Following a recent refactor, the codebase is now more organized and comprehensib
 ## Contributing & Development
 
 Your input is valuable! Whether it's bug reports, feature requests, or code contributions, we're eager to hear from you. If you're contributing code, please ensure it's well-commented for clarity. For any enhancements or issues, please create a related issue or submit a pull request.
+
+## Beautiful Screen Recording
+
+
+
+https://github.com/carlosmbe/Hands-Free/assets/53784701/40505203-4984-4b6c-ae27-60ee6f381d57
+
+
+
+
+
+
+
